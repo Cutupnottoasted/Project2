@@ -28,9 +28,95 @@
 // 1) 2 | 8 | 3         2) 2 | 1 | 6
 //    1 | 6 | 4            4 | x | 8
 //    x | 7 | 5            7 | 5 | 3
+//
+// f(n) = g(n) + h(n)
+// g(n) = distance from start state (depth)
+// h(n) = sum of tiles out of place
+#include <iostream>
+#include <algorithm>
+#include <ctime>
+#include <cstdlib>
+using namespace std;
+
+struct BoardState 
+{
+    bool open; // if generated board is correct path
+    int board_depth; // level of board state
+    int misplaced_tiles; // sum of misplaced tiles
+    int board[9] = {1, 2, 3,
+                    8, 9, 4,
+                    7, 6, 5};
+
+    BoardState()
+    {
+        open = true;
+        board_depth = -1;
+        misplaced_tiles = -1;
+    }
+
+    bool contains(int board[], int n, int num)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            if (board[i] == num)
+            return true;
+        }
+            return false;
+    }
+
+    void gen_board()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            int num = rand() % 9 + 1;
+            while (contains(board, i, num))
+                num = rand() % 9 + 1;
+            board[i] = num;
+        }
+    }
+
+    void print_board()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            cout << board[i] << " ";
+            if ((i + 1) % 3 == 0)
+                cout << endl;
+        }
+    }
+
+    int get_mismatch() { return misplaced_tiles; }              
+};
+
+void check_mismatch(BoardState& b, BoardState goal)
+{
+    int mismatch = 0;
+    for (int i = 0; i < 9; i++)
+    {
+        if (b.board[i] != goal.board[i])
+            mismatch++;
+    }
+    b.misplaced_tiles = mismatch; 
+}
+
 
 
 int main()
 {
+    srand(time(0));
+    BoardState goal;
+    BoardState start;
+    BoardState open[10], closed[10];
 
+    start.gen_board();
+    start.print_board();
+    cout << endl;
+    goal.print_board();
+
+    check_mismatch(start, goal);
+    cout << "Number of misplaced tiles: " << start.get_mismatch() << endl;
+    open[0] = start;
+    cout << endl; 
+    open[0].print_board();
+    return 0;
 }
