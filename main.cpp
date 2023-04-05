@@ -88,6 +88,13 @@ struct BoardState
     int get_mismatch() { return misplaced_tiles; }              
 };
 
+BoardState swap(BoardState b, int swap_index, int blank_index)
+{
+    b.board[blank_index] = b.board[swap_index];
+    b.board[swap_index] = 9; 
+    return b; 
+}
+
 void check_mismatch(BoardState& b, BoardState goal)
 {
     int mismatch = 0;
@@ -99,7 +106,115 @@ void check_mismatch(BoardState& b, BoardState goal)
     b.misplaced_tiles = mismatch; 
 }
 
+void check_moves(const BoardState& initial, BoardState array[10], int& used)
+{
+    int board_index;
+    int array_index; 
+    for (int i = 0; i < 9; i++)
+    {
+        if (initial.board[i] == 9)
+            board_index = i; 
+    }
+    cout << "9 index in passed board: " << board_index << endl;
 
+    if (board_index == 0)
+    {
+        array[used] = swap(initial, 1, 0);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 3, 0);
+        cout << endl;
+        array[used].print_board();
+        used++; 
+    }
+    if (board_index == 1)
+    {
+        array[used] = swap(initial, 0, 1);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 2, 1);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 4, 1);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+    }
+    if (board_index == 2)
+    {
+        array[used] = swap(initial, 1, 2);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 5, 2);
+        cout << endl;
+        array[used].print_board();
+        used++; 
+    }
+    if (board_index == 3)
+    {
+        array[used] = swap(initial, 0, 3);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 4, 3);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 6, 3);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+    }
+    if (board_index == 4)
+    {
+        array[used] = swap(initial, 1, 4);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 3, 4);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 5, 4);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 7, 4);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+    }
+    if (board_index == 5)
+    {
+        array[used] = swap(initial, 2, 5);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 4, 5);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 8, 5);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+    }
+    if (board_index == 6)
+    {
+        array[used] = swap(initial, 3, 6);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 7, 6);
+        cout << endl;
+        array[used].print_board();
+        used++; 
+    }            
+}
 
 int main()
 {
@@ -107,7 +222,7 @@ int main()
     BoardState goal;
     BoardState start;
     BoardState open[10], closed[10];
-
+    int openUsed = 0, closedUsed = 0;
     start.gen_board();
     start.print_board();
     cout << endl;
@@ -115,8 +230,8 @@ int main()
 
     check_mismatch(start, goal);
     cout << "Number of misplaced tiles: " << start.get_mismatch() << endl;
-    open[0] = start;
-    cout << endl; 
+    check_moves(start, open, openUsed);
+    cout << endl;
     open[0].print_board();
     return 0;
 }
