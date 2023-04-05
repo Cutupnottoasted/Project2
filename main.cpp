@@ -36,10 +36,21 @@
 #include <algorithm>
 #include <ctime>
 #include <cstdlib>
+#include <sys/time.h>
 using namespace std;
 
 struct BoardState 
 {
+	//time values
+	timeval beg, end;
+	//begin timer
+	gettimeofday(&beg, NULL);
+	//end timer
+	gettimeofday(&end, NULL);
+	//print execution time
+	const double runtime = end.tv_sec - beg.tv_sec + (end.tv_usec - beg.tv_usec) / 1000000.0;
+	
+printf("compute time: %.6f s\n", runtime);
     bool open; // if generated board is correct path
     int board_depth; // level of board state
     int misplaced_tiles; // sum of misplaced tiles
