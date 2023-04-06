@@ -40,7 +40,6 @@ using namespace std;
 
 struct BoardState 
 {
-    bool open; // if generated board is correct path
     int board_depth; // level of board state
     int misplaced_tiles; // sum of misplaced tiles
     int board[9] = {1, 2, 3,
@@ -49,7 +48,6 @@ struct BoardState
 
     BoardState()
     {
-        open = true;
         board_depth = -1;
         misplaced_tiles = -1;
     }
