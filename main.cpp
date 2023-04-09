@@ -40,17 +40,7 @@
 using namespace std;
 
 struct BoardState 
-{
-	//time values
-	timeval beg, end;
-	//begin timer
-	gettimeofday(&beg, NULL);
-	//end timer
-	gettimeofday(&end, NULL);
-	//print execution time
-	const double runtime = end.tv_sec - beg.tv_sec + (end.tv_usec - beg.tv_usec) / 1000000.0;
-	
-printf("compute time: %.6f s\n", runtime);
+{	
     bool open; // if generated board is correct path
     int board_depth; // level of board state
     int misplaced_tiles; // sum of misplaced tiles
@@ -84,6 +74,32 @@ printf("compute time: %.6f s\n", runtime);
                 num = rand() % 9 + 1;
             board[i] = num;
         }
+    }
+	
+	void gen_boardOne()
+    {
+		board[0] = 2;
+		board[1] = 8;
+		board[2] = 3;
+		board[3] = 1;
+		board[4] = 6;
+		board[5] = 4;
+		board[6] = 0;
+		board[7] = 7;
+		board[8] = 5;
+    }
+	
+	void gen_boardTwo()
+    {
+		board[0] = 2;
+		board[1] = 1;
+		board[2] = 6;
+		board[3] = 4;
+		board[4] = 0;
+		board[5] = 8;
+		board[6] = 7;
+		board[7] = 5;
+		board[8] = 3;
     }
 
     void print_board()
@@ -229,20 +245,72 @@ void check_moves(const BoardState& initial, BoardState array[10], int& used)
 
 int main()
 {
+	//time values
+	timeval beg, end;
+	//init variables
     srand(time(0));
     BoardState goal;
     BoardState start;
+	BoardState boardOne;
+	BoardState boardTwo;
     BoardState open[10], closed[10];
     int openUsed = 0, closedUsed = 0;
-    start.gen_board();
-    start.print_board();
+	
+	//begin timer
+	gettimeofday(&beg, NULL);
+	
+	//start with OPEN containing only the initial node
+	boardOne.gen_boardOne();
+	boardTwo.gen_boardTwo();
+	
+	//until goal node is found, repeat following procedure
+	while(/*GOALNOTFOUND*/false)
+	{
+		if(/*no nodes on open*/false)
+		{
+			std::cout << "FAILURE: no nodes on open" << std::endl;
+		}
+		
+		//pick node on open with lowest f' value. call it BESTNODE
+		//pick node here
+		if(/*BESTNODE == GoalNode*/false)
+		{
+			//goal node found set condition to false and exit
+		}
+		else
+		{
+			//generate successors of BESTNODE (based on directions available to 0)
+		}
+		
+		//generate hueistic values of all successors of BESTNODE
+		//set BESTNODE to point to successor
+		//g(SUCCESSOR) = g(BESNODE) + cost of getting from BESTNODE to SUCCESSOR
+		//f'(SUCCESSOR) = g(SUCCESSOR) + h(SUCCESSOR)
+		
+		//check if SUCCESSOR is the same as any node on OPEN
+			//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
+	}
+	
+	
+	
+	
+	//start.gen_board();
+    //start.print_board();
+	/*
     cout << endl;
     goal.print_board();
-
     check_mismatch(start, goal);
     cout << "Number of misplaced tiles: " << start.get_mismatch() << endl;
     check_moves(start, open, openUsed);
     cout << endl;
     open[0].print_board();
+	*/
+	
+	
+	//end timer
+	gettimeofday(&end, NULL);
+	//print execution time
+	const double runtime = end.tv_sec - beg.tv_sec + (end.tv_usec - beg.tv_usec) / 1000000.0;
+	printf("compute time: %.6f s\n", runtime);
     return 0;
 }
