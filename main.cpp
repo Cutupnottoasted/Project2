@@ -43,10 +43,14 @@
 #include <ctime>
 #include <cstdlib>
 #include <sys/time.h>
-#include <queue>
 using namespace std;
 
-int goalBoard[9] = {1, 2, 3,
+struct BoardState 
+{	
+    bool open; // if generated board is correct path
+    int board_depth; // level of board state
+    int misplaced_tiles; // sum of misplaced tiles
+    int board[9] = {1, 2, 3,
                     8, 9, 4,
                     7, 6, 5};
 int num_states_created = 0;
@@ -103,12 +107,9 @@ struct BoardState
 		board[3] = 1;
 		board[4] = 6;
 		board[5] = 4;
-		board[6] = 9;
+		board[6] = 0;
 		board[7] = 7;
 		board[8] = 5;
-        g = 0;
-        set_h();
-        f = h;
     }
 	
 	void gen_boardTwo()
@@ -117,17 +118,12 @@ struct BoardState
 		board[1] = 1;
 		board[2] = 6;
 		board[3] = 4;
-		board[4] = 9;
+		board[4] = 0;
 		board[5] = 8;
 		board[6] = 7;
 		board[7] = 5;
 		board[8] = 3;
-        g = 0;
-        h = 7;
-        f = 7;
     }
-    
-    void set_g(int parent_g) { g = parent_g + 1; }
 
     void set_h()
     {
@@ -270,21 +266,162 @@ void print_queue(priority_queue<BoardState> queue)
         temp.print_board();
         queue.pop();  
     }
+    if (board_index == 3)
+    {
+        array[used] = swap(initial, 0, 3);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 4, 3);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 6, 3);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+    }
+    if (board_index == 4)
+    {
+        array[used] = swap(initial, 1, 4);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 3, 4);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 5, 4);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 7, 4);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+    }
+    if (board_index == 5)
+    {
+        array[used] = swap(initial, 2, 5);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 4, 5);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 8, 5);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+    }
+    if (board_index == 6)
+    {
+        array[used] = swap(initial, 3, 6);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 7, 6);
+        cout << endl;
+        array[used].print_board();
+        used++; 
+    }
+    if (board_index == 7)
+    {
+        array[used] = swap(initial, 4, 7);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 6, 7);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 8, 7);
+        cout << endl;
+        array[used].print_board();
+        used++;
+    }
+    if (board_index == 8)
+    {
+        array[used] = swap(initial, 5, 8);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 7, 8);
+        cout << endl;
+        array[used].print_board();
+        used++;
+    }            
 }
 
 int main()
 {
-    priority_queue<BoardState> open;
-    priority_queue<BoardState> closed;
-    BoardState current;
-
-    current.gen_boardOne();
-    current.print_board(); 
-    current.gen_children(open, closed);
-
-    cout << "Printing closed: " << endl;
-    print_queue(closed); 
-    cout << "Print open: " << endl;
-    print_queue(open);
-
+	//time values
+	timeval beg, end;
+	//init variables
+    srand(time(0));
+    BoardState goal;
+    BoardState start;
+	BoardState boardOne;
+	BoardState boardTwo;
+    BoardState open[10], closed[10];
+    int openUsed = 0, closedUsed = 0;
+	
+	//begin timer
+	gettimeofday(&beg, NULL);
+	
+	//start with OPEN containing only the initial node
+	boardOne.gen_boardOne();
+	boardTwo.gen_boardTwo();
+	
+	//until goal node is found, repeat following procedure
+	while(/*GOALNOTFOUND*/false)
+	{
+		if(/*no nodes on open*/false)
+		{
+			std::cout << "FAILURE: no nodes on open" << std::endl;
+		}
+		
+		//pick node on open with lowest f' value. call it BESTNODE
+		//pick node here
+		if(/*BESTNODE == GoalNode*/false)
+		{
+			//goal node found set condition to false and exit
+		}
+		else
+		{
+			//generate successors of BESTNODE (based on directions available to 0)
+		}
+		
+		//generate hueistic values of all successors of BESTNODE
+		//set BESTNODE to point to successor
+		//g(SUCCESSOR) = g(BESNODE) + cost of getting from BESTNODE to SUCCESSOR
+		//f'(SUCCESSOR) = g(SUCCESSOR) + h(SUCCESSOR)
+		
+		//check if SUCCESSOR is the same as any node on OPEN
+			//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
+	}
+	
+	
+	
+	
+	//start.gen_board();
+    //start.print_board();
+	/*
+    cout << endl;
+    goal.print_board();
+    check_mismatch(start, goal);
+    cout << "Number of misplaced tiles: " << start.get_mismatch() << endl;
+    check_moves(start, open, openUsed);
+    cout << endl;
+    open[0].print_board();
+	*/
+	
+	
+	//end timer
+	gettimeofday(&end, NULL);
+	//print execution time
+	const double runtime = end.tv_sec - beg.tv_sec + (end.tv_usec - beg.tv_usec) / 1000000.0;
+	printf("compute time: %.6f s\n", runtime);
+    return 0;
 }
