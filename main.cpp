@@ -240,6 +240,32 @@ void check_moves(const BoardState& initial, BoardState array[10], int& used)
         cout << endl;
         array[used].print_board();
         used++; 
+    }
+    if (board_index == 7)
+    {
+        array[used] = swap(initial, 4, 7);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 6, 7);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 8, 7);
+        cout << endl;
+        array[used].print_board();
+        used++;
+    }
+    if (board_index == 8)
+    {
+        array[used] = swap(initial, 5, 8);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 7, 8);
+        cout << endl;
+        array[used].print_board();
+        used++;
     }            
 }
 
