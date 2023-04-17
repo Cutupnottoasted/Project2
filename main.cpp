@@ -40,6 +40,14 @@
 #include <vector>
 using namespace std;
 
+int goalBoardOne[9] = {2, 8, 3,
+                    1, 6, 4,
+                    0, 7, 5};
+					
+int goalBoardTwo[9] = {2, 1, 6,
+                    4, 0, 8,
+                    7, 5, 3};
+
 struct BoardState 
 {	
     bool open; // if generated board is correct path
@@ -112,9 +120,38 @@ struct BoardState
                 cout << endl;
         }
     }
+	
+	void set_HAustin()
+    {
+        int hn = 0;
+        for (int i = 0; i < 9; i++)
+        {
+			for(int j=0; j<9; j++)
+			{
+				if(board[i] == goalBoardOne[j])
+				{
+					hn+= (abs(i/3 - j/3) + abs(i%3 - j%3));
+				}
+			}
+        }
+		misplaced_tiles = hn;
+    }
 
     int get_mismatch() { return misplaced_tiles; }              
 };
+
+bool operator==(const BoardState& b1, const BoardState& b2)
+{
+	return b1.board[0] == b2.board[0] &&
+		b1.board[1] == b2.board[1] &&
+		b1.board[2] == b2.board[2] &&
+		b1.board[3] == b2.board[3] &&
+		b1.board[4] == b2.board[4] &&
+		b1.board[5] == b2.board[5] &&
+		b1.board[6] == b2.board[6] &&
+		b1.board[7] == b2.board[7] &&
+		b1.board[8] == b2.board[8];
+}
 
 BoardState swap(BoardState b, int swap_index, int blank_index)
 {
