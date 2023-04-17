@@ -51,8 +51,8 @@ int goalBoardTwo[9] = {2, 1, 6,
 struct BoardState 
 {	
     bool open; // if generated board is correct path
-    int board_depth; // level of board state
-    int misplaced_tiles; // sum of misplaced tiles
+    int g; // level of board state
+    int h; // sum of misplaced tiles
     int board[9] = {1, 2, 3,
                     8, 9, 4,
                     7, 6, 5};
@@ -60,8 +60,8 @@ struct BoardState
     BoardState()
     {
         open = true;
-        board_depth = -1;
-        misplaced_tiles = -1;
+        g = -1;
+        h = -1;
     }
 
     // bool contains(int board[], int n, int num)
@@ -134,10 +134,10 @@ struct BoardState
 				}
 			}
         }
-		misplaced_tiles = hn;
+		h = hn;
     }
 
-    int get_mismatch() { return misplaced_tiles; }              
+    int get_mismatch() { return h; }              
 };
 
 bool operator==(const BoardState& b1, const BoardState& b2)
@@ -168,7 +168,7 @@ void check_mismatch(BoardState& b, BoardState goal)
         if (b.board[i] != goal.board[i])
             mismatch++;
     }
-    b.misplaced_tiles = mismatch; 
+    b.h = mismatch; 
 }
 
 void check_moves(const BoardState& initial, vector<BoardState> boardVector)
