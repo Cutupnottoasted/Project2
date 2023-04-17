@@ -1,4 +1,3 @@
-
 // project #2
 // CS4346: Artificial Intelligence
 // Due: April 17th, 2023
@@ -33,11 +32,6 @@
 // f(n) = g(n) + h(n)
 // g(n) = distance from start state (depth)
 // h(n) = sum of tiles out of place
-//
-// A* Rule List Original
-// If child f(n) is <= to parent f(n) then generate current node's new children and move current to closed
-// else if child f(n) is > to parent's f(n) then go to parent's depth and search for the lowest f(n) of that depth (if f(n) is the same then choose most left)
-//
 #include <iostream>
 #include <algorithm>
 #include <ctime>
@@ -53,29 +47,12 @@ struct BoardState
     int board[9] = {1, 2, 3,
                     8, 9, 4,
                     7, 6, 5};
-int num_states_created = 0;
-struct BoardState 
-{	
-    int stateID; // board ID & creation order
-    int g; // level of board state
-    int h; // sum of misplaced tiles
-    int f; // board_depth + misplaced_tiles
-    int board[9] = {-1, -1, -1,
-                    -1, -1, -1,
-                    -1, -1, -1 }; 
 
     BoardState()
     {
-        num_states_created++;
-        stateID = num_states_created;
-        g = 0;
-        h = 0;
-        f = 0;
-    }
-
-    bool operator<(const BoardState& rhs) const
-    {
-        return rhs.f < f; 
+        open = true;
+        board_depth = -1;
+        misplaced_tiles = -1;
     }
 
     bool contains(int board[], int n, int num)
@@ -125,123 +102,6 @@ struct BoardState
 		board[8] = 3;
     }
 
-    void set_h()
-    {
-        int misplaced = 0;
-        for (int i = 0; i < 9; i++)
-        {
-            if (board[i] != goalBoard[i])
-                misplaced++;
-        }
-        h = misplaced;
-    }
-
-    int get_blank()
-    {
-        for (int i = 0; i < 9; i++)
-        {
-            if (board[i] == 9)
-                return i;
-        }
-    }
-
-    BoardState swap(BoardState b, int swap, int blank)
-    {
-        b.board[blank] = b.board[swap];
-        b.board[swap] = 9;
-        num_states_created++;
-        b.stateID = num_states_created;
-        b.set_g(b.g);
-        b.set_h();
-        b.f = b.g + b.h; 
-        return b;
-    }
-
-    void gen_children(priority_queue<BoardState>& open, priority_queue<BoardState>& closed)
-    {
-        int blank = get_blank();
-        if (blank == 0)
-        {
-            open.push(swap(*this, 1, 0));
-            open.push(swap(*this, 3, 0)); 
-            closed.push(*this); 
-        }
-        if (blank == 1)
-        {
-            open.push(swap(*this, 0, 1));
-            open.push(swap(*this, 2, 1));
-            open.push(swap(*this, 4, 1)); 
-            closed.push(*this);             
-        }
-        if (blank == 2)
-        {
-            open.push(swap(*this, 1, 2));
-            open.push(swap(*this, 5, 2)); 
-            closed.push(*this); 
-        }
-        if (blank == 3)
-        {
-            open.push(swap(*this, 0, 3));
-            open.push(swap(*this, 4, 3));
-            open.push(swap(*this, 6, 3));  
-            closed.push(*this); 
-        }
-        if (blank == 4)
-        {
-            open.push(swap(*this, 1, 4));
-            open.push(swap(*this, 3, 4));
-            open.push(swap(*this, 5, 4));
-            open.push(swap(*this, 7, 4));  
-            closed.push(*this); 
-        }
-        if (blank == 5)
-        {
-            open.push(swap(*this, 2, 5));
-            open.push(swap(*this, 4, 5));
-            open.push(swap(*this, 8, 5)); 
-            closed.push(*this); 
-        }
-        if (blank == 6)
-        {
-            open.push(swap(*this, 3, 6));
-            open.push(swap(*this, 7, 6)); 
-            closed.push(*this); 
-        }
-        if (blank == 7)
-        {
-            open.push(swap(*this, 4, 7));
-            open.push(swap(*this, 6, 7));
-            open.push(swap(*this, 8, 7)); 
-            closed.push(*this); 
-        }
-        if (blank == 8)
-        {
-            open.push(swap(*this, 5, 8));
-            open.push(swap(*this, 7, 8)); 
-            closed.push(*this); 
-        }
-                
-    }
-
-    BoardState find_best(priority_queue<BoardState>& open, priority_queue<BoardState>& closed)
-    {
-        // because the priority queue orders based on f(n) and order of creation
-        // then
-        
-        BoardState child;
-
-        child = open.top();
-
-        if (child.f <= f)
-        {
-            // place child into closed and return child board
-            closed.push(child);
-            return child;
-        }
-        //else // 
-        
-    }
-
     void print_board()
     {
         for (int i = 0; i < 9; i++)
@@ -250,21 +110,76 @@ struct BoardState
             if ((i + 1) % 3 == 0)
                 cout << endl;
         }
-        cout << "Depth: " << g << endl;
-        cout << "Misplaced Tiles: " << h << endl;
-        cout << "F(N): " << f << endl << endl;
-    }     
+    }
+
+    int get_mismatch() { return misplaced_tiles; }              
 };
 
-void print_queue(priority_queue<BoardState> queue)
+BoardState swap(BoardState b, int swap_index, int blank_index)
 {
-    BoardState temp; 
-    while(!queue.empty())
-    { 
-        temp = queue.top();
-        cout << "BoardState ID: " << temp.stateID << endl; 
-        temp.print_board();
-        queue.pop();  
+    b.board[blank_index] = b.board[swap_index];
+    b.board[swap_index] = 9; 
+    return b; 
+}
+
+void check_mismatch(BoardState& b, BoardState goal)
+{
+    int mismatch = 0;
+    for (int i = 0; i < 9; i++)
+    {
+        if (b.board[i] != goal.board[i])
+            mismatch++;
+    }
+    b.misplaced_tiles = mismatch; 
+}
+
+void check_moves(const BoardState& initial, BoardState array[10], int& used)
+{
+    int board_index;
+    int array_index; 
+    for (int i = 0; i < 9; i++)
+    {
+        if (initial.board[i] == 9)
+            board_index = i; 
+    }
+    cout << "9 index in passed board: " << board_index << endl;
+
+    if (board_index == 0)
+    {
+        array[used] = swap(initial, 1, 0);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 3, 0);
+        cout << endl;
+        array[used].print_board();
+        used++; 
+    }
+    if (board_index == 1)
+    {
+        array[used] = swap(initial, 0, 1);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 2, 1);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+        array[used] = swap(initial, 4, 1);
+        cout << endl;
+        array[used].print_board();        
+        used++;
+    }
+    if (board_index == 2)
+    {
+        array[used] = swap(initial, 1, 2);
+        cout << endl;
+        array[used].print_board();
+        used++;
+        array[used] = swap(initial, 5, 2);
+        cout << endl;
+        array[used].print_board();
+        used++; 
     }
     if (board_index == 3)
     {
