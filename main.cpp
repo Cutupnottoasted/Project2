@@ -37,6 +37,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <sys/time.h>
+#include <vector>
 using namespace std;
 
 struct BoardState 
@@ -55,26 +56,26 @@ struct BoardState
         misplaced_tiles = -1;
     }
 
-    bool contains(int board[], int n, int num)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            if (board[i] == num)
-            return true;
-        }
-            return false;
-    }
+    // bool contains(int board[], int n, int num)
+    // {
+    //     for (int i = 0; i < n; i++)
+    //     {
+    //         if (board[i] == num)
+    //         return true;
+    //     }
+    //         return false;
+    // }
 
-    void gen_board()
-    {
-        for (int i = 0; i < 9; i++)
-        {
-            int num = rand() % 9 + 1;
-            while (contains(board, i, num))
-                num = rand() % 9 + 1;
-            board[i] = num;
-        }
-    }
+    // void gen_board()
+    // {
+    //     for (int i = 0; i < 9; i++)
+    //     {
+    //         int num = rand() % 9 + 1;
+    //         while (contains(board, i, num))
+    //             num = rand() % 9 + 1;
+    //         board[i] = num;
+    //     }
+    // }
 	
 	void gen_boardOne()
     {
@@ -84,7 +85,7 @@ struct BoardState
 		board[3] = 1;
 		board[4] = 6;
 		board[5] = 4;
-		board[6] = 0;
+		board[6] = 9;
 		board[7] = 7;
 		board[8] = 5;
     }
@@ -95,7 +96,7 @@ struct BoardState
 		board[1] = 1;
 		board[2] = 6;
 		board[3] = 4;
-		board[4] = 0;
+		board[4] = 9;
 		board[5] = 8;
 		board[6] = 7;
 		board[7] = 5;
@@ -133,7 +134,7 @@ void check_mismatch(BoardState& b, BoardState goal)
     b.misplaced_tiles = mismatch; 
 }
 
-void check_moves(const BoardState& initial, BoardState array[10], int& used)
+void check_moves(const BoardState& initial, vector<BoardState> boardVector)
 {
     int board_index;
     int array_index; 
@@ -146,126 +147,102 @@ void check_moves(const BoardState& initial, BoardState array[10], int& used)
 
     if (board_index == 0)
     {
-        array[used] = swap(initial, 1, 0);
+        boardVector.insert(boardVector.begin(), swap(initial, 1, 0));
         cout << endl;
-        array[used].print_board();
-        used++;
-        array[used] = swap(initial, 3, 0);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 3, 0));
         cout << endl;
-        array[used].print_board();
-        used++; 
+        boardVector.front().print_board();
     }
     if (board_index == 1)
     {
-        array[used] = swap(initial, 0, 1);
+        boardVector.insert(boardVector.begin(), swap(initial, 0, 1));
         cout << endl;
-        array[used].print_board();        
-        used++;
-        array[used] = swap(initial, 2, 1);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 2, 1));
         cout << endl;
-        array[used].print_board();        
-        used++;
-        array[used] = swap(initial, 4, 1);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 4, 1));
         cout << endl;
-        array[used].print_board();        
-        used++;
+        boardVector.front().print_board();
     }
     if (board_index == 2)
     {
-        array[used] = swap(initial, 1, 2);
+        boardVector.insert(boardVector.begin(), swap(initial, 1, 2));
         cout << endl;
-        array[used].print_board();
-        used++;
-        array[used] = swap(initial, 5, 2);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 5, 2));
         cout << endl;
-        array[used].print_board();
-        used++; 
+        boardVector.front().print_board();
     }
     if (board_index == 3)
     {
-        array[used] = swap(initial, 0, 3);
+        boardVector.insert(boardVector.begin(), swap(initial, 0, 3));
         cout << endl;
-        array[used].print_board();        
-        used++;
-        array[used] = swap(initial, 4, 3);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 4, 3));
         cout << endl;
-        array[used].print_board();        
-        used++;
-        array[used] = swap(initial, 6, 3);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 6, 3));
         cout << endl;
-        array[used].print_board();        
-        used++;
+        boardVector.front().print_board();
     }
     if (board_index == 4)
     {
-        array[used] = swap(initial, 1, 4);
+        boardVector.insert(boardVector.begin(), swap(initial, 1, 4));
         cout << endl;
-        array[used].print_board();        
-        used++;
-        array[used] = swap(initial, 3, 4);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 3, 4));
         cout << endl;
-        array[used].print_board();        
-        used++;
-        array[used] = swap(initial, 5, 4);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 5, 4));
         cout << endl;
-        array[used].print_board();        
-        used++;
-        array[used] = swap(initial, 7, 4);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 7, 4));
         cout << endl;
-        array[used].print_board();        
-        used++;
+        boardVector.front().print_board();
     }
     if (board_index == 5)
     {
-        array[used] = swap(initial, 2, 5);
+        boardVector.insert(boardVector.begin(), swap(initial, 2, 5));
         cout << endl;
-        array[used].print_board();        
-        used++;
-        array[used] = swap(initial, 4, 5);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 4, 5));
         cout << endl;
-        array[used].print_board();        
-        used++;
-        array[used] = swap(initial, 8, 5);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 8, 5));
         cout << endl;
-        array[used].print_board();        
-        used++;
+        boardVector.front().print_board();
     }
     if (board_index == 6)
     {
-        array[used] = swap(initial, 3, 6);
+        boardVector.insert(boardVector.begin(), swap(initial, 3, 6));
         cout << endl;
-        array[used].print_board();
-        used++;
-        array[used] = swap(initial, 7, 6);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 7, 6));
         cout << endl;
-        array[used].print_board();
-        used++; 
+        boardVector.front().print_board();
     }
     if (board_index == 7)
     {
-        array[used] = swap(initial, 4, 7);
+        boardVector.insert(boardVector.begin(), swap(initial, 4, 7));
         cout << endl;
-        array[used].print_board();
-        used++;
-        array[used] = swap(initial, 6, 7);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 6, 7));
         cout << endl;
-        array[used].print_board();
-        used++;
-        array[used] = swap(initial, 8, 7);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 8, 7));
         cout << endl;
-        array[used].print_board();
-        used++;
+        boardVector.front().print_board();
     }
     if (board_index == 8)
     {
-        array[used] = swap(initial, 5, 8);
+        boardVector.insert(boardVector.begin(), swap(initial, 5, 8));
         cout << endl;
-        array[used].print_board();
-        used++;
-        array[used] = swap(initial, 7, 8);
+        boardVector.front().print_board();
+        boardVector.insert(boardVector.begin(), swap(initial, 7, 8));
         cout << endl;
-        array[used].print_board();
-        used++;
+        boardVector.front().print_board();
     }            
 }
 
@@ -279,16 +256,19 @@ int main()
     BoardState start;
 	BoardState boardOne;
 	BoardState boardTwo;
-    BoardState open[10], closed[10];
-    int openUsed = 0, closedUsed = 0;
+    vector<BoardState> open, closed;
 	
 	//begin timer
 	gettimeofday(&beg, NULL);
 	
 	//start with OPEN containing only the initial node
 	boardOne.gen_boardOne();
-	boardTwo.gen_boardTwo();
-	
+	// boardTwo.gen_boardTwo();
+	boardOne.print_board();
+    boardTwo.print_board();
+
+    check_moves(boardOne, open);
+    
 	//until goal node is found, repeat following procedure
 	while(/*GOALNOTFOUND*/false)
 	{
