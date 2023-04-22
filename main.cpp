@@ -140,7 +140,20 @@ struct BoardState
     int get_mismatch() { return h; }              
 };
 
-bool operator==(const BoardState& b1, const BoardState& b2)
+bool operator==( BoardState& b1 , BoardState& b2)
+{
+	return b1.board[0] == b2.board[0] &&
+		b1.board[1] == b2.board[1] &&
+		b1.board[2] == b2.board[2] &&
+		b1.board[3] == b2.board[3] &&
+		b1.board[4] == b2.board[4] &&
+		b1.board[5] == b2.board[5] &&
+		b1.board[6] == b2.board[6] &&
+		b1.board[7] == b2.board[7] &&
+		b1.board[8] == b2.board[8];
+}
+
+bool operator==( BoardState& b1 , const BoardState& b2)
 {
 	return b1.board[0] == b2.board[0] &&
 		b1.board[1] == b2.board[1] &&
@@ -305,20 +318,24 @@ int main()
     boardTwo.print_board();
 
     check_moves(boardOne, open);
-    
+    BoardState* BESTNODE;
+	BoardState* SUCCESSOR;
 	//until goal node is found, repeat following procedure
-	while(/*GOALNOTFOUND*/false)
+	bool GOALNOTFOUND = true;
+	while(GOALNOTFOUND)
 	{
-		if(/*no nodes on open*/false)
+		if(open.size() == 0)
 		{
 			std::cout << "FAILURE: no nodes on open" << std::endl;
+			GOALNOTFOUND=false;
 		}
 		
 		//pick node on open with lowest f' value. call it BESTNODE
 		//pick node here
-		if(/*BESTNODE == GoalNode*/false)
+		if(*BESTNODE == goal)
 		{
 			//goal node found set condition to false and exit
+			GOALNOTFOUND=false;
 		}
 		else
 		{
@@ -330,8 +347,18 @@ int main()
 		//g(SUCCESSOR) = g(BESNODE) + cost of getting from BESTNODE to SUCCESSOR
 		//f'(SUCCESSOR) = g(SUCCESSOR) + h(SUCCESSOR)
 		
-		//check if SUCCESSOR is the same as any node on OPEN
-			//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
+		for(int i=0; i<open.size(); i++)//iterate through 'open' vector
+		{
+			//check if SUCCESSOR is the same as any node on OPEN
+			
+			if(std::find(open.begin(), open.end(), *SUCCESSOR/*TODO set successor*/) != open.end())
+			{
+				//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
+				delete SUCCESSOR;
+				SUCCESSOR = nullptr;
+			}
+		}
+			
 	}
 	
 	
