@@ -313,6 +313,7 @@ int main()
 	
 	//start with OPEN containing only the initial node
 	boardOne.gen_boardOne();
+	open.push_back(boardOne);
 	// boardTwo.gen_boardTwo();
 	boardOne.print_board();
     boardTwo.print_board();
@@ -322,16 +323,25 @@ int main()
 	BoardState* SUCCESSOR;
 	//until goal node is found, repeat following procedure
 	bool GOALNOTFOUND = true;
+	std::cout << "Loop Start:" << std::endl;
 	while(GOALNOTFOUND)
 	{
 		if(open.size() == 0)
 		{
 			std::cout << "FAILURE: no nodes on open" << std::endl;
 			GOALNOTFOUND=false;
+			break;
 		}
 		
 		//pick node on open with lowest f' value. call it BESTNODE
 		//pick node here
+		BESTNODE = &open[0];
+		for(int i=0; i<open.size(); i++)
+		{
+			//check if SUCCESSOR is the same as any node on OPEN
+			BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
+		}
+		std::cout << "	best node selected" << std::endl;
 		if(*BESTNODE == goal)
 		{
 			//goal node found set condition to false and exit
@@ -341,7 +351,7 @@ int main()
 		{
 			//generate successors of BESTNODE (based on directions available to 0)
 		}
-		
+		std::cout << "	generated successors" << std::endl;
 		//generate hueistic values of all successors of BESTNODE
 		//set BESTNODE to point to successor
 		//g(SUCCESSOR) = g(BESNODE) + cost of getting from BESTNODE to SUCCESSOR
@@ -350,16 +360,19 @@ int main()
 		for(int i=0; i<open.size(); i++)//iterate through 'open' vector
 		{
 			//check if SUCCESSOR is the same as any node on OPEN
-			
+			std::cout << "loop: " << i << std::endl;
 			if(std::find(open.begin(), open.end(), *SUCCESSOR/*TODO set successor*/) != open.end())
 			{
 				//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
-				delete SUCCESSOR;
-				SUCCESSOR = nullptr;
+				//delete SUCCESSOR;
+				//SUCCESSOR = nullptr;
+				
 			}
 		}
+		std::cout << "compared bestnode to best node to successors" << std::endl;
 			
 	}
+	std::cout << "Loop End" << std::endl;
 	
 	
 	
