@@ -204,7 +204,7 @@ void check_mismatch(BoardState& b, BoardState goal)
     b.h = mismatch; 
 }
 
-void check_moves(const BoardState& initial, vector<BoardState>& boardVector)
+void check_moves(const BoardState initial, vector<BoardState>& boardVector)
 {
     int board_index;
     int array_index; 
@@ -416,7 +416,7 @@ int main()
 		}
 		
 		std::cout << "compared bestnode to best node to successors" << std::endl;
-		std::cin >> in;
+		//std::cin >> in;
 			
 	}
 	std::cout << "Loop End" << std::endl;
