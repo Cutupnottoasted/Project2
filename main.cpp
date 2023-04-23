@@ -321,8 +321,11 @@ int main()
     check_moves(boardOne, open);
     BoardState* BESTNODE;
 	BoardState* SUCCESSOR;
+	
+	int in;
 	//until goal node is found, repeat following procedure
 	bool GOALNOTFOUND = true;
+	bool firstPass = true;
 	std::cout << "Loop Start:" << std::endl;
 	while(GOALNOTFOUND)
 	{
@@ -335,7 +338,12 @@ int main()
 		
 		//pick node on open with lowest f' value. call it BESTNODE
 		//pick node here
-		BESTNODE = &open[0];
+		if(firstPass)
+		{
+			BESTNODE = &open[0];
+			firstPass= false;
+		}
+		
 		for(int i=0; i<open.size(); i++)
 		{
 			//check if SUCCESSOR is the same as any node on OPEN
@@ -363,13 +371,18 @@ int main()
 		//set BESTNODE to point to successor
 		//g(SUCCESSOR) = g(BESNODE) + cost of getting from BESTNODE to SUCCESSOR
 		//f'(SUCCESSOR) = g(SUCCESSOR) + h(SUCCESSOR)
+		for(int i=0; i<open.size(); i++)
+		{
+			//check if SUCCESSOR is the same as any node on OPEN
+			BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
+		}
 		
-		
+		/*
 		for(int i=0; i<open.size(); i++)//iterate through 'open' vector
 		{
 			//check if SUCCESSOR is the same as any node on OPEN
-			std::cout << "loop: " << i << std::endl;
-			if(std::find(open.begin(), open.end(), *SUCCESSOR/*TODO set successor*/) != open.end())
+			//std::cout << "loop: " << i << std::endl;
+			if(std::find(open.begin(), open.end(), *BESTNODE) != open.end())
 			{
 				//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
 				//delete SUCCESSOR;
@@ -378,7 +391,9 @@ int main()
 				
 			}
 		}
+		*/
 		std::cout << "compared bestnode to best node to successors" << std::endl;
+		//std::cin >> in;
 			
 	}
 	std::cout << "Loop End" << std::endl;
