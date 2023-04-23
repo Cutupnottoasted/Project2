@@ -127,7 +127,8 @@ struct BoardState
             if ((i + 1) % 3 == 0)
                 cout << endl;
         }
-        cout << "fn: " << g+h << endl; 
+        cout << "fn: " << g+h << endl;
+        cout << "gn: " << g << endl; 
     }
 
 void set_HCody(Gridtype map)
@@ -183,6 +184,37 @@ void set_HCody(Gridtype map)
         h += 1;
     cout << endl << "fn: " << h << endl;
     cout << endl;
+}
+
+void set_HEuclidean() {
+    int hn = 0;
+    for (int i = 0; i < 9; i++) {
+        if (board[i] != 0) {
+            int goalIndex = find(goalBoardOne, goalBoardOne+9, board[i]) - goalBoardOne;
+            if (goalIndex != i) {
+                int x1 = i % 3, y1 = i / 3;
+                int x2 = goalIndex % 3, y2 = goalIndex / 3;
+                hn += sqrt(((x2 - x1)*(x2 - x1)) + ((y2 - y1) * (y2 - y1)));
+            }
+        }
+    }
+    h = hn;
+}
+
+void set_HRobert(Gridtype map) // this is SET_HEUCLIDEAN not horizontal distance
+{
+    h = 0;
+    for (int current_loc = 0; current_loc < 9; current_loc++)
+    {
+        for (int home = 0; home < 9; home++)
+        {
+            if (board[current_loc] == goalBoard[home])
+            {
+                h += sqrt(((map[home].first - map[current_loc].first)*(map[home].first - map[current_loc].first) +
+                            (map[home].second - map[current_loc].second) * (map[home].second - map[current_loc].second)));
+            }
+        }
+    }
 }
 	
 void set_HAustin(Gridtype map)
@@ -263,8 +295,10 @@ BoardState swap(BoardState b, int swap_index, int blank_index)
     b.board[swap_index] = 0;
 	b.g++;
     // b.set_HCody(grid_map);
-	b.set_HAustin(grid_map);
-    // b.set_h(); 
+	// b.set_HAustin(grid_map);
+    // b.set_h();
+    // b.set_HEuclidean(); 
+    b.set_HRobert(grid_map);
     return b; 
 }
 
@@ -432,7 +466,10 @@ int main()
 	
 	//start with OPEN containing only the initial node
 	initial.gen_boardOne();
-    initial.set_HAustin(grid_map);
+    // initial.set_HRobert(grid_map);
+    initial.set_HRobert(grid_map);
+    // initial.set_h();
+    // initial.set_HAustin(grid_map);
 	open.insert(open.begin(), initial); 
 
 	// boardTwo.gen_boardTwo();
