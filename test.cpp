@@ -38,6 +38,7 @@
 #include <cstdlib>
 #include <sys/time.h>
 #include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
 int goalBoardOne[9] = {2, 8, 3,
@@ -52,6 +53,8 @@ int goalBoard[9] = {1,2,3,
 					8,0,4,
 					7,6,5};
 
+typedef map<int, std::pair<int, int> > Gridtype; 
+Gridtype grid_map; 
 struct BoardState 
 {	
     bool open; // if generated board is correct path
@@ -92,14 +95,14 @@ struct BoardState
 	void gen_boardOne()
     {
 		board[0] = 2;
-		board[1] = 8;
-		board[2] = 3;
-		board[3] = 1;
-		board[4] = 6;
-		board[5] = 4;
-		board[6] = 0;
-		board[7] = 7;
-		board[8] = 5;
+		board[1] = 1;
+		board[2] = 6;
+		board[3] = 0;
+		board[4] = 4;
+		board[5] = 8;
+		board[6] = 7;
+		board[7] = 5;
+		board[8] = 3;
     }
 	
 	void gen_boardTwo()
@@ -117,47 +120,116 @@ struct BoardState
 
     void print_board()
     {
+        cout << endl;
         for (int i = 0; i < 9; i++)
         {
             cout << board[i] << " ";
             if ((i + 1) % 3 == 0)
                 cout << endl;
         }
+        cout << "fn: " << g+h << endl; 
     }
-	
-	void set_HAustin()
+
+void set_HCody(Gridtype map)
+{
+    h = 0;
+    int s = 0; 
+    for (int current_loc = 0; current_loc < 9; current_loc++)
     {
-        int hn = 0;
-        for (int i = 0; i < 9; i++)
+        for (int home = 0; home < 9; home++)
         {
-			for(int j=0; j<9; j++)
-			{
-				if(board[i] == goalBoardOne[j])
-				{
-					hn+= (abs(i/3 - j/3) + abs(i%3 - j%3));
-				}
-			}
-        }
-		h = hn;
+            if (board[current_loc] == goalBoard[home])
+            {
+                h += ( abs(map[current_loc].first - map[home].first) + 
+                        abs(map[current_loc].second - map[home].second));
+                
+            }
+        }   
     }
-	void set_h()
-	{
-		h=0;
-		//std::cout << "hey" << std::endl;
-		for(int i =0; i<9; i++)
-		{
-			//std::cout << "=" << std::endl;
-			if((board[i] != goalBoard[i]))
-			{
-				h++;
-			}
-		}
-		//std::cout << "hey2" << std::endl;
-	}
+    // s(n) & center
+    // check perimeter and if successor is not correct +2
+    // goal:    index:
+    // 1 2 3    0 1 2
+    // 8 0 4 -> 3 4 5
+    // 7 6 5    6 7 8
+    // if index != successor
+    // if 3 != 1
+    // if 0 != 2
+    // if 1 != 3
+    // if 2 != 4
+    // if 5 != 5
+    // if 8 != 6
+    // if 7 != 7
+    // if 6 != 8
+    // if 4 != 0
+    if(board[3] != 1) 
+        s += 2;
+    if(board[0] != 2)
+        s += 2; 
+    if(board[1] != 3)
+        s += 2;
+    if(board[2] != 4)
+        s += 2;
+    if(board[5] != 5)
+        s += 2;
+    if(board[8] != 6)
+        s += 2;
+    if(board[7] != 7)
+        s += 2;
+    if(board[6] != 8)
+        s += 2;
+    h += (s * 3);// h3(n)
+    if(board[4] != 0)
+        h += 1;
+    cout << endl << "fn: " << h << endl;
+    cout << endl;
+}
+	
+void set_HAustin(Gridtype map)
+{
+    h = 0; 
+    for (int current_loc = 0; current_loc < 9; current_loc++)
+    {
+        for (int home = 0; home < 9; home++)
+        {
+            if (board[current_loc] == goalBoard[home])
+            {
+                h += ( abs(map[current_loc].first - map[home].first) + 
+                        abs(map[current_loc].second - map[home].second));
+            }
+        }
+    }
+}
+void set_h()
+{
+    h=0;
+    //std::cout << "hey" << std::endl;
+    for(int i =0; i<9; i++)
+    {
+        //std::cout << "=" << std::endl;
+        if((board[i] != goalBoard[i]))
+        {
+            h++;
+        }
+    }
+    //std::cout << "hey2" << std::endl;
+}
 
     int get_mismatch() { return h; }              
 };
 
+bool sort_by_fn(const BoardState& b1, const BoardState& b2)
+{
+    if ((b1.g + b1.h) > (b2.g + b2.h))
+        return true;
+    else if ((b1.g + b1.h) >= (b2.g + b2.h))
+    {
+        if(b1.g < b2.g)
+            return true; 
+    }
+
+    return false; 
+}
 
 bool operator==(const BoardState& b1 , const BoardState& b2)
 {
@@ -190,19 +262,21 @@ BoardState swap(BoardState b, int swap_index, int blank_index)
     b.board[blank_index] = b.board[swap_index];
     b.board[swap_index] = 0;
 	b.g++;
-	b.set_h();
+    b.set_HCody(grid_map);
+	// b.set_HAustin(grid_map);
+    // b.set_h(); 
     return b; 
 }
 
-void check_mismatch(BoardState& b, BoardState goal)
+int check_mismatch(BoardState b)
 {
     int mismatch = 0;
     for (int i = 0; i < 9; i++)
     {
-        if (b.board[i] != goal.board[i])
+        if (b.board[i] != goalBoard[i])
             mismatch++;
     }
-    b.h = mismatch; 
+    return mismatch;
 }
 
 void check_moves(const BoardState initial, vector<BoardState>& boardVector)
@@ -214,7 +288,7 @@ void check_moves(const BoardState initial, vector<BoardState>& boardVector)
         if (initial.board[i] == 0)
             board_index = i; 
     }
-    cout << "0 index in passed board: " << board_index << endl;
+    cout << "The blank index is: " << board_index << endl;
 
     if (board_index == 0)
     {
@@ -315,7 +389,28 @@ void check_moves(const BoardState initial, vector<BoardState>& boardVector)
         cout << endl;
         boardVector.front().print_board();
     }
-        
+
+    sort(boardVector.begin(), boardVector.end(), sort_by_fn);            
+}
+
+void set_map(Gridtype& map)
+{
+    int i = 0;
+    int y = 3;
+    while(i < 9)
+    {
+        for (int x = 1; x <= 3; x++)
+        {
+            map[i] = make_pair(x, y);
+            i++;
+        }
+        y--;
+    }
+
+    for (int i = 0; i < 9; i++)
+    {
+        cout <<"index: " << i << " x: " << map[i].first << " y: " << map[i].second << endl; 
+    }
 }
 
 int main()
@@ -324,105 +419,140 @@ int main()
 	timeval beg, end;
 	//init variables
     srand(time(0));
-    BoardState goal;
+
 	//BoardState goalTwo;
-    BoardState start;
-	BoardState boardOne;
-	BoardState boardTwo;
+
+	BoardState initial;
+
     vector<BoardState> open, closed;
+    set_map(grid_map); 
 	
 	//begin timer
 	gettimeofday(&beg, NULL);
 	
 	//start with OPEN containing only the initial node
-	boardOne.gen_boardOne();
-    boardOne.set_h();
-	open.push_back(boardOne);
-	// boardTwo.gen_boardTwo();
-	boardOne.print_board();
-    boardTwo.print_board();
+	initial.gen_boardOne();
+    initial.set_HCody(grid_map);
+	open.insert(open.begin(), initial); 
 
-    check_moves(boardOne, open);
+	// boardTwo.gen_boardTwo();
+    cout <<"initial board: " << endl;
+	initial.print_board();
+    // boardTwo.print_board();
+    closed.insert(closed.begin(), open.back());
+    open.pop_back();
+    cout << endl << "Open's size: " << open.size() << endl; 
+    cout << endl << "initial board moved to closed and open popped" << endl;
+    cout << endl << "Checking moves" << endl;
+    check_moves(initial, open);
+    cout << endl << "initial board's children generated" << endl;
     BoardState* BESTNODE;
 	BoardState* SUCCESSOR;
+    cout << endl << "Printing all new children" << endl; 
+    for(int i = 0; i < open.size(); i++)
+    {
+        open.at(i).print_board();
+    }
+
+    bool run = true;
+    while (run)
+    {
+        SUCCESSOR = &open.back();
+        cout << endl << "Successor's board: " << endl;
+        SUCCESSOR -> print_board();
+        if (check_mismatch(*SUCCESSOR) == 0)
+            break;
+        open.pop_back();
+        closed.insert(closed.begin(), *SUCCESSOR);
+        cout << endl << "Closed's size: " << closed.size() << endl;
+        cout << endl << "sorting closed" << endl;
+        sort(closed.begin(), closed.end(), sort_by_fn);
+        cout << endl << "Most significant closed node: " << endl; 
+        closed.back().print_board(); 
+        cout << endl << "Checking moves" << endl;
+        check_moves(*SUCCESSOR, open);
+        cout << endl << "Generated Successors children" << endl;
+        cout << endl << "Printing all new children" << endl;
+        sort(open.begin(), open.end(), sort_by_fn);  
+    }
+    cout << endl << "found goal" << endl;
+	// std::cout << "sanity check: goal is goal" << (goal==goal) << std::endl;
 	
-	std::cout << "sanity check: goal is goal" << (goal==goal) << std::endl;
-	
-	int in;
-	//until goal node is found, repeat following procedure
-	bool GOALNOTFOUND = true;
-	bool firstPass = true;
-	std::cout << "Loop Start:" << std::endl;
-	while(GOALNOTFOUND)
-	{
-		if(open.size() == 0)
-		{
-			std::cout << "FAILURE: no nodes on open" << std::endl;
-			GOALNOTFOUND=false;
-			break;
-		}
+	// int in;
+	// //until goal node is found, repeat following procedure
+	// bool GOALNOTFOUND = true;
+	// bool firstPass = true;
+	// std::cout << "Loop Start:" << std::endl;
+	// while(GOALNOTFOUND)
+	// {
+	// 	if(open.size() == 0)
+	// 	{
+	// 		std::cout << "FAILURE: no nodes on open" << std::endl;
+	// 		GOALNOTFOUND=false;
+	// 		break;
+	// 	}
 		
-		//pick node on open with lowest f' value. call it BESTNODE
-		//pick node here
-		if(firstPass)
-		{
-			BESTNODE = &open[0];
-			firstPass= false;
-		}
+	// 	//pick node on open with lowest f' value. call it BESTNODE
+	// 	//pick node here
+	// 	if(firstPass)
+	// 	{
+	// 		BESTNODE = &open[0];
+	// 		firstPass= false;
+	// 	}
 		
-		for(int i=0; i<open.size(); i++)
-		{
-			//check if SUCCESSOR is the same as any node on OPEN
-			BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
-		}
-		std::cout << "	best node selected" << std::endl;
-		if(*BESTNODE == goal)
-		{
-			//goal node found set condition to false and exit
-			GOALNOTFOUND=false;
-		}
-		else
-		{
-			//generate successors of BESTNODE (based on directions available to 0)
-			std::cout << "	OPEN SIZE B4" << open.size() << std::endl;
+	// 	for(int i=0; i<open.size(); i++)
+	// 	{
+	// 		//check if SUCCESSOR is the same as any node on OPEN
+	// 		BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
+	// 	}
+	// 	std::cout << "	best node selected" << std::endl;
+	// 	if(*BESTNODE == goal)
+	// 	{
+	// 		//goal node found set condition to false and exit
+	// 		GOALNOTFOUND=false;
+	// 	}
+	// 	else
+	// 	{
+	// 		//generate successors of BESTNODE (based on directions available to 0)
+	// 		std::cout << "	OPEN SIZE B4" << open.size() << std::endl;
 			
-			check_moves(*BESTNODE, open);
-			std::cout << "	OPEN SIZE populated" << open.size() << std::endl;
-			closed.push_back(open.back());
-			open.pop_back();
-			std::cout << "	OPEN SIZE after" << open.size() << std::endl;
-		}
-		std::cout << "	generated successors" << std::endl;
-		//generate hueistic values of all successors of BESTNODE
-		//set BESTNODE to point to successor
-		//g(SUCCESSOR) = g(BESNODE) + cost of getting from BESTNODE to SUCCESSOR
-		//f'(SUCCESSOR) = g(SUCCESSOR) + h(SUCCESSOR)
-		for(int i=0; i<open.size(); i++)
-		{
-			//check if SUCCESSOR is the same as any node on OPEN
-			BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
-		}
+	// 		check_moves(*BESTNODE, open);
+	// 		std::cout << "	OPEN SIZE populated" << open.size() << std::endl;
+	// 		closed.push_back(open.back());
+	// 		open.pop_back();
+	// 		std::cout << "	OPEN SIZE after" << open.size() << std::endl;
+	// 	}
+	// 	std::cout << "	generated successors" << std::endl;
+	// 	//generate hueistic values of all successors of BESTNODE
+	// 	//set BESTNODE to point to successor
+	// 	//g(SUCCESSOR) = g(BESNODE) + cost of getting from BESTNODE to SUCCESSOR
+	// 	//f'(SUCCESSOR) = g(SUCCESSOR) + h(SUCCESSOR)
+	// 	for(int i=0; i<open.size(); i++)
+	// 	{
+	// 		//check if SUCCESSOR is the same as any node on OPEN
+	// 		BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
+	// 	}
 		
 		
-		for(int i=0; i<open.size(); i++)//iterate through 'open' vector
-		{
-			//check if SUCCESSOR is the same as any node on OPEN
-			//std::cout << "loop: " << i << std::endl;
-			if(open[i] == *BESTNODE)
-			{
-				//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
-				//delete SUCCESSOR;
-				//open.
-				//SUCCESSOR = nullptr;
+	// 	for(int i=0; i<open.size(); i++)//iterate through 'open' vector
+	// 	{
+	// 		//check if SUCCESSOR is the same as any node on OPEN
+	// 		//std::cout << "loop: " << i << std::endl;
+	// 		if(open[i] == *BESTNODE)
+	// 		{
+	// 			//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
+	// 			//delete SUCCESSOR;
+	// 			//open.
+	// 			//SUCCESSOR = nullptr;
 				
-			}
-		}
+	// 		}
+	// 	}
 		
-		std::cout << "compared bestnode to best node to successors" << std::endl;
-		//std::cin >> in;
+	// 	std::cout << "compared bestnode to best node to successors" << std::endl;
+	// 	//std::cin >> in;
 			
-	}
-	std::cout << "Loop End" << std::endl;
+	// }
+	// std::cout << "Loop End" << std::endl;
 	
 	
 	
