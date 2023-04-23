@@ -140,7 +140,20 @@ struct BoardState
     int get_mismatch() { return h; }              
 };
 
-bool operator==( BoardState& b1 , BoardState& b2)
+bool operator==(const BoardState& b1 , const BoardState& b2)
+{
+	return (b1.board[0] == b2.board[0]) &&
+		(b1.board[1] == b2.board[1]) &&
+		(b1.board[2] == b2.board[2]) &&
+		(b1.board[3] == b2.board[3]) &&
+		(b1.board[4] == b2.board[4]) &&
+		(b1.board[5] == b2.board[5]) &&
+		(b1.board[6] == b2.board[6]) &&
+		(b1.board[7] == b2.board[7]) &&
+		(b1.board[8] == b2.board[8]);
+}
+/*
+bool operator==( const BoardState& b1 , const BoardState& b2)
 {
 	return b1.board[0] == b2.board[0] &&
 		b1.board[1] == b2.board[1] &&
@@ -152,20 +165,7 @@ bool operator==( BoardState& b1 , BoardState& b2)
 		b1.board[7] == b2.board[7] &&
 		b1.board[8] == b2.board[8];
 }
-
-bool operator==( BoardState& b1 , const BoardState& b2)
-{
-	return b1.board[0] == b2.board[0] &&
-		b1.board[1] == b2.board[1] &&
-		b1.board[2] == b2.board[2] &&
-		b1.board[3] == b2.board[3] &&
-		b1.board[4] == b2.board[4] &&
-		b1.board[5] == b2.board[5] &&
-		b1.board[6] == b2.board[6] &&
-		b1.board[7] == b2.board[7] &&
-		b1.board[8] == b2.board[8];
-}
-
+*/
 BoardState swap(BoardState b, int swap_index, int blank_index)
 {
     b.board[blank_index] = b.board[swap_index];
@@ -303,6 +303,7 @@ int main()
 	//init variables
     srand(time(0));
     BoardState goal;
+	//BoardState goalTwo;
     BoardState start;
 	BoardState boardOne;
 	BoardState boardTwo;
@@ -321,6 +322,8 @@ int main()
     check_moves(boardOne, open);
     BoardState* BESTNODE;
 	BoardState* SUCCESSOR;
+	
+	std::cout << "sanity check: goal is goal" << (goal==goal) << std::endl;
 	
 	int in;
 	//until goal node is found, repeat following procedure
@@ -377,12 +380,12 @@ int main()
 			BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
 		}
 		
-		/*
+		
 		for(int i=0; i<open.size(); i++)//iterate through 'open' vector
 		{
 			//check if SUCCESSOR is the same as any node on OPEN
 			//std::cout << "loop: " << i << std::endl;
-			if(std::find(open.begin(), open.end(), *BESTNODE) != open.end())
+			if(open[i] == *BESTNODE)
 			{
 				//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
 				//delete SUCCESSOR;
@@ -391,9 +394,9 @@ int main()
 				
 			}
 		}
-		*/
+		
 		std::cout << "compared bestnode to best node to successors" << std::endl;
-		//std::cin >> in;
+		std::cin >> in;
 			
 	}
 	std::cout << "Loop End" << std::endl;
