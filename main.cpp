@@ -48,19 +48,23 @@ int goalBoardTwo[9] = {2, 1, 6,
                     4, 0, 8,
                     7, 5, 3};
 
+int goalBoard[9] = {1,2,3,
+					8,0,4,
+					7,6,5};
+
 struct BoardState 
 {	
     bool open; // if generated board is correct path
     int g; // level of board state
     int h; // sum of misplaced tiles
     int board[9] = {1, 2, 3,
-                    8, 9, 4,
+                    8, 0, 4,
                     7, 6, 5};
 
     BoardState()
     {
         open = true;
-        g = -1;
+        g = 0;
         h = -1;
     }
 
@@ -93,7 +97,7 @@ struct BoardState
 		board[3] = 1;
 		board[4] = 6;
 		board[5] = 4;
-		board[6] = 9;
+		board[6] = 0;
 		board[7] = 7;
 		board[8] = 5;
     }
@@ -104,7 +108,7 @@ struct BoardState
 		board[1] = 1;
 		board[2] = 6;
 		board[3] = 4;
-		board[4] = 9;
+		board[4] = 0;
 		board[5] = 8;
 		board[6] = 7;
 		board[7] = 5;
@@ -136,6 +140,20 @@ struct BoardState
         }
 		h = hn;
     }
+	void set_h()
+	{
+		h=0;
+		//std::cout << "hey" << std::endl;
+		for(int i =0; i<9; i++)
+		{
+			//std::cout << "=" << std::endl;
+			if((board[i] != goalBoard[i]) && (board[i] != 0))
+			{
+				h++;
+			}
+		}
+		//std::cout << "hey2" << std::endl;
+	}
 
     int get_mismatch() { return h; }              
 };
@@ -169,7 +187,9 @@ bool operator==( const BoardState& b1 , const BoardState& b2)
 BoardState swap(BoardState b, int swap_index, int blank_index)
 {
     b.board[blank_index] = b.board[swap_index];
-    b.board[swap_index] = 9; 
+    b.board[swap_index] = 0;
+	b.g++;
+	b.set_h();
     return b; 
 }
 
@@ -190,10 +210,10 @@ void check_moves(const BoardState& initial, vector<BoardState>& boardVector)
     int array_index; 
     for (int i = 0; i < 9; i++)
     {
-        if (initial.board[i] == 9)
+        if (initial.board[i] == 0)
             board_index = i; 
     }
-    cout << "9 index in passed board: " << board_index << endl;
+    cout << "0 index in passed board: " << board_index << endl;
 
     if (board_index == 0)
     {
