@@ -257,7 +257,7 @@ void check_moves(const BoardState& initial, vector<BoardState> boardVector)
         boardVector.insert(boardVector.begin(), swap(initial, 2, 5));
         cout << endl;
         boardVector.front().print_board();
-        boardVector.insert(boardVector.begin(), swap(initial, 4, 5));
+        boardVector.insert(boardVector.begin(), swap(initial, 4, 5));	
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 8, 5));
@@ -350,12 +350,20 @@ int main()
 		else
 		{
 			//generate successors of BESTNODE (based on directions available to 0)
+			std::cout << "	OPEN SIZE B4" << open.size() << std::endl;
+			
+			check_moves(*BESTNODE, open);
+			std::cout << "	OPEN SIZE populated" << open.size() << std::endl;
+			closed.push_back(open.back());
+			open.pop_back();
+			std::cout << "	OPEN SIZE after" << open.size() << std::endl;
 		}
 		std::cout << "	generated successors" << std::endl;
 		//generate hueistic values of all successors of BESTNODE
 		//set BESTNODE to point to successor
 		//g(SUCCESSOR) = g(BESNODE) + cost of getting from BESTNODE to SUCCESSOR
 		//f'(SUCCESSOR) = g(SUCCESSOR) + h(SUCCESSOR)
+		
 		
 		for(int i=0; i<open.size(); i++)//iterate through 'open' vector
 		{
@@ -365,6 +373,7 @@ int main()
 			{
 				//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
 				//delete SUCCESSOR;
+				//open.
 				//SUCCESSOR = nullptr;
 				
 			}
