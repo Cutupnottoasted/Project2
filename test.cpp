@@ -95,14 +95,14 @@ struct BoardState
 	void gen_boardOne()
     {
 		board[0] = 2;
-		board[1] = 1;
-		board[2] = 6;
-		board[3] = 0;
-		board[4] = 4;
-		board[5] = 8;
-		board[6] = 7;
-		board[7] = 5;
-		board[8] = 3;
+		board[1] = 8;
+		board[2] = 3;
+		board[3] = 1;
+		board[4] = 6;
+		board[5] = 4;
+		board[6] = 0;
+		board[7] = 7;
+		board[8] = 5;
     }
 	
 	void gen_boardTwo()
@@ -262,8 +262,8 @@ BoardState swap(BoardState b, int swap_index, int blank_index)
     b.board[blank_index] = b.board[swap_index];
     b.board[swap_index] = 0;
 	b.g++;
-    b.set_HCody(grid_map);
-	// b.set_HAustin(grid_map);
+    // b.set_HCody(grid_map);
+	b.set_HAustin(grid_map);
     // b.set_h(); 
     return b; 
 }
@@ -432,7 +432,7 @@ int main()
 	
 	//start with OPEN containing only the initial node
 	initial.gen_boardOne();
-    initial.set_HCody(grid_map);
+    initial.set_HAustin(grid_map);
 	open.insert(open.begin(), initial); 
 
 	// boardTwo.gen_boardTwo();
