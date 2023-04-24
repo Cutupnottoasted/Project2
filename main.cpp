@@ -38,6 +38,7 @@
 #include <cstdlib>
 #include <sys/time.h>
 #include <vector>
+#include <cmath>
 using namespace std;
 
 int goalBoardOne[9] = {2, 8, 3,
@@ -123,8 +124,26 @@ struct BoardState
             if ((i + 1) % 3 == 0)
                 cout << endl;
         }
+		cout << "g: " << g << ", h: " << h << std::endl;
     }
 	
+	
+	void set_HEuclidean() {
+    int hn = 0;
+    for (int i = 0; i < 9; i++) {
+        if (board[i] != 0) {
+            int goalIndex = find(goalBoardOne, goalBoardOne+9, board[i]) - goalBoardOne;
+            if (goalIndex != i) {
+                int x1 = i % 3, y1 = i / 3;
+                int x2 = goalIndex % 3, y2 = goalIndex / 3;
+                hn += sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+            }
+        }
+    }
+    h = hn;
+}
+
+
 	void set_HAustin()
     {
         int hn = 0;
@@ -171,26 +190,11 @@ bool operator==(const BoardState& b1 , const BoardState& b2)
 		(b1.board[7] == b2.board[7]) &&
 		(b1.board[8] == b2.board[8]);
 }
-/*
-bool operator==( const BoardState& b1 , const BoardState& b2)
-{
-	return b1.board[0] == b2.board[0] &&
-		b1.board[1] == b2.board[1] &&
-		b1.board[2] == b2.board[2] &&
-		b1.board[3] == b2.board[3] &&
-		b1.board[4] == b2.board[4] &&
-		b1.board[5] == b2.board[5] &&
-		b1.board[6] == b2.board[6] &&
-		b1.board[7] == b2.board[7] &&
-		b1.board[8] == b2.board[8];
-}
-*/
 BoardState swap(BoardState b, int swap_index, int blank_index)
 {
     b.board[blank_index] = b.board[swap_index];
     b.board[swap_index] = 0;
 	b.g++;
-	b.set_h();
     return b; 
 }
 
@@ -219,99 +223,123 @@ void check_moves(const BoardState initial, vector<BoardState>& boardVector)
     if (board_index == 0)
     {
         boardVector.insert(boardVector.begin(), swap(initial, 1, 0));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 3, 0));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
     }
     if (board_index == 1)
     {
         boardVector.insert(boardVector.begin(), swap(initial, 0, 1));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 2, 1));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 4, 1));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
     }
     if (board_index == 2)
     {
         boardVector.insert(boardVector.begin(), swap(initial, 1, 2));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 5, 2));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
     }
     if (board_index == 3)
     {
         boardVector.insert(boardVector.begin(), swap(initial, 0, 3));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 4, 3));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 6, 3));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
     }
     if (board_index == 4)
     {
         boardVector.insert(boardVector.begin(), swap(initial, 1, 4));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 3, 4));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 5, 4));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 7, 4));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
     }
     if (board_index == 5)
     {
         boardVector.insert(boardVector.begin(), swap(initial, 2, 5));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
-        boardVector.insert(boardVector.begin(), swap(initial, 4, 5));	
+        boardVector.insert(boardVector.begin(), swap(initial, 4, 5));
+boardVector[0].set_h();		
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 8, 5));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
     }
     if (board_index == 6)
     {
         boardVector.insert(boardVector.begin(), swap(initial, 3, 6));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 7, 6));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
     }
     if (board_index == 7)
     {
         boardVector.insert(boardVector.begin(), swap(initial, 4, 7));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 6, 7));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 8, 7));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
     }
     if (board_index == 8)
     {
         boardVector.insert(boardVector.begin(), swap(initial, 5, 8));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 7, 8));
+		boardVector[0].set_h();
         cout << endl;
         boardVector.front().print_board();
     }
@@ -346,7 +374,7 @@ int main()
     BoardState* BESTNODE;
 	BoardState* SUCCESSOR;
 	
-	std::cout << "sanity check: goal is goal" << (goal==goal) << std::endl;
+	//std::cout << "sanity check: goal is goal" << (goal==goal) << std::endl;
 	
 	int in;
 	//until goal node is found, repeat following procedure
@@ -384,13 +412,13 @@ int main()
 		else
 		{
 			//generate successors of BESTNODE (based on directions available to 0)
-			std::cout << "	OPEN SIZE B4" << open.size() << std::endl;
+			//std::cout << "	OPEN SIZE B4" << open.size() << std::endl;
 			
 			check_moves(*BESTNODE, open);
-			std::cout << "	OPEN SIZE populated" << open.size() << std::endl;
+			//std::cout << "	OPEN SIZE populated" << open.size() << std::endl;
 			closed.push_back(open.back());
 			open.pop_back();
-			std::cout << "	OPEN SIZE after" << open.size() << std::endl;
+			//std::cout << "	OPEN SIZE after" << open.size() << std::endl;
 		}
 		std::cout << "	generated successors" << std::endl;
 		//generate hueistic values of all successors of BESTNODE
@@ -400,26 +428,38 @@ int main()
 		for(int i=0; i<open.size(); i++)
 		{
 			//check if SUCCESSOR is the same as any node on OPEN
+			//std::cout << "	g1" << BESTNODE->g <<  std::endl;
+			//std::cout << "	h1" << BESTNODE->h <<  std::endl;
+			//std::cout << "	g2" << open[i].g <<  std::endl;
+			//std::cout << "	h2" << open[i].h <<  std::endl;
 			BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
 		}
 		
-		
+		std::cout << "	checked successors" << std::endl;
 		for(int i=0; i<open.size(); i++)//iterate through 'open' vector
 		{
 			//check if SUCCESSOR is the same as any node on OPEN
 			//std::cout << "loop: " << i << std::endl;
 			if(open[i] == *BESTNODE)
 			{
+				//std::cout << "matching but not doing anything\n\n\n\n\n" << std::endl;
 				//we can throw away SUCCESSOR and add OLD to list of BESTNODE's Successors
 				//delete SUCCESSOR;
-				//open.
-				//SUCCESSOR = nullptr;
-				
+				open.erase(std::remove(open.begin(), open.end(), *BESTNODE), open.end());
+				for(int i=0; i<open.size(); i++)
+		{
+			//check if SUCCESSOR is the same as any node on OPEN
+			//std::cout << "	g1" << BESTNODE->g <<  std::endl;
+			//std::cout << "	h1" << BESTNODE->h <<  std::endl;
+			//std::cout << "	g2" << open[i].g <<  std::endl;
+			//std::cout << "	h2" << open[i].h <<  std::endl;
+			BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
+		}
 			}
 		}
 		
 		std::cout << "compared bestnode to best node to successors" << std::endl;
-		//std::cin >> in;
+		std::cin >> in;
 			
 	}
 	std::cout << "Loop End" << std::endl;
