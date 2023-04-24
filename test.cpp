@@ -2,7 +2,7 @@
 // CS4346: Artificial Intelligence
 // Due: April 17th, 2023
 // Authors: Cody Hoang, Austin Brightly, Robert Kubos
-//
+// 
 //
 // Overview: Implement A* algorithm in C++ to a 8-puzzle game
 // Each team member must create their own heuristic function.
@@ -44,8 +44,7 @@ using namespace std;
 int goalBoardOne[9] = {2, 8, 3,
                     1, 6, 4,
                     0, 7, 5};
-
-                    //Changing location of 3 and 1 to resolve parity issue
+					
 int goalBoardTwo[9] = {2, 1, 6,
                     4, 0, 8,
                     7, 5, 3};
@@ -54,10 +53,10 @@ int goalBoard[9] = {1,2,3,
 					8,0,4,
 					7,6,5};
 
-typedef map<int, std::pair<int, int> > Gridtype;
-Gridtype grid_map;
-struct BoardState
-{
+typedef map<int, std::pair<int, int> > Gridtype; 
+Gridtype grid_map; 
+struct BoardState 
+{	
     bool open; // if generated board is correct path
     int g; // level of board state
     int h; // sum of misplaced tiles
@@ -92,7 +91,7 @@ struct BoardState
     //         board[i] = num;
     //     }
     // }
-
+	
 	void gen_boardOne()
     {
 		board[0] = 2;
@@ -105,7 +104,7 @@ struct BoardState
 		board[7] = 7;
 		board[8] = 5;
     }
-
+	
 	void gen_boardTwo()
     {
 		board[0] = 2;
@@ -129,24 +128,24 @@ struct BoardState
                 cout << endl;
         }
         cout << "fn: " << g+h << endl;
-        cout << "gn: " << g << endl;
+        cout << "gn: " << g << endl; 
     }
 
 void set_HCody(Gridtype map)
 {
     h = 0;
-    int s = 0;
+    int s = 0; 
     for (int current_loc = 0; current_loc < 9; current_loc++)
     {
         for (int home = 0; home < 9; home++)
         {
             if (board[current_loc] == goalBoard[home])
             {
-                h += ( abs(map[current_loc].first - map[home].first) +
+                h += ( abs(map[current_loc].first - map[home].first) + 
                         abs(map[current_loc].second - map[home].second));
-
+                
             }
-        }
+        }   
     }
     // s(n) & center
     // check perimeter and if successor is not correct +2
@@ -164,10 +163,10 @@ void set_HCody(Gridtype map)
     // if 7 != 7
     // if 6 != 8
     // if 4 != 0
-    if(board[3] != 1)
+    if(board[3] != 1) 
         s += 2;
     if(board[0] != 2)
-        s += 2;
+        s += 2; 
     if(board[1] != 3)
         s += 2;
     if(board[2] != 4)
@@ -186,8 +185,8 @@ void set_HCody(Gridtype map)
     cout << endl << "fn: " << h << endl;
     cout << endl;
 }
-//Commented out since this was moved to set_HRobert
-/*void set_HEuclidean() {
+
+void set_HEuclidean() {
     int hn = 0;
     for (int i = 0; i < 9; i++) {
         if (board[i] != 0) {
@@ -200,8 +199,8 @@ void set_HCody(Gridtype map)
         }
     }
     h = hn;
+}
 
-*/
 void set_HRobert(Gridtype map) // this is SET_HEUCLIDEAN not horizontal distance
 {
     h = 0;
@@ -217,17 +216,17 @@ void set_HRobert(Gridtype map) // this is SET_HEUCLIDEAN not horizontal distance
         }
     }
 }
-
+	
 void set_HAustin(Gridtype map)
 {
-    h = 0;
+    h = 0; 
     for (int current_loc = 0; current_loc < 9; current_loc++)
     {
         for (int home = 0; home < 9; home++)
         {
             if (board[current_loc] == goalBoard[home])
             {
-                h += ( abs(map[current_loc].first - map[home].first) +
+                h += ( abs(map[current_loc].first - map[home].first) + 
                         abs(map[current_loc].second - map[home].second));
             }
         }
@@ -248,7 +247,7 @@ void set_h()
     //std::cout << "hey2" << std::endl;
 }
 
-    int get_mismatch() { return h; }
+    int get_mismatch() { return h; }              
 };
 
 bool sort_by_fn(const BoardState& b1, const BoardState& b2)
@@ -258,10 +257,10 @@ bool sort_by_fn(const BoardState& b1, const BoardState& b2)
     else if ((b1.g + b1.h) >= (b2.g + b2.h))
     {
         if(b1.g < b2.g)
-            return true;
+            return true; 
     }
 
-    return false;
+    return false; 
 }
 
 bool operator==(const BoardState& b1 , const BoardState& b2)
@@ -298,9 +297,9 @@ BoardState swap(BoardState b, int swap_index, int blank_index)
     // b.set_HCody(grid_map);
 	// b.set_HAustin(grid_map);
     // b.set_h();
-    // b.set_HEuclidean();
+    // b.set_HEuclidean(); 
     b.set_HRobert(grid_map);
-    return b;
+    return b; 
 }
 
 int check_mismatch(BoardState b)
@@ -317,11 +316,11 @@ int check_mismatch(BoardState b)
 void check_moves(const BoardState initial, vector<BoardState>& boardVector)
 {
     int board_index;
-    int array_index;
+    int array_index; 
     for (int i = 0; i < 9; i++)
     {
         if (initial.board[i] == 0)
-            board_index = i;
+            board_index = i; 
     }
     cout << "The blank index is: " << board_index << endl;
 
@@ -387,7 +386,7 @@ void check_moves(const BoardState initial, vector<BoardState>& boardVector)
         boardVector.insert(boardVector.begin(), swap(initial, 2, 5));
         cout << endl;
         boardVector.front().print_board();
-        boardVector.insert(boardVector.begin(), swap(initial, 4, 5));
+        boardVector.insert(boardVector.begin(), swap(initial, 4, 5));	
         cout << endl;
         boardVector.front().print_board();
         boardVector.insert(boardVector.begin(), swap(initial, 8, 5));
@@ -425,7 +424,7 @@ void check_moves(const BoardState initial, vector<BoardState>& boardVector)
         boardVector.front().print_board();
     }
 
-    sort(boardVector.begin(), boardVector.end(), sort_by_fn);
+    sort(boardVector.begin(), boardVector.end(), sort_by_fn);            
 }
 
 void set_map(Gridtype& map)
@@ -444,7 +443,7 @@ void set_map(Gridtype& map)
 
     for (int i = 0; i < 9; i++)
     {
-        cout <<"index: " << i << " x: " << map[i].first << " y: " << map[i].second << endl;
+        cout <<"index: " << i << " x: " << map[i].first << " y: " << map[i].second << endl; 
     }
 }
 
@@ -460,53 +459,18 @@ int main()
 	BoardState initial;
 
     vector<BoardState> open, closed;
-    set_map(grid_map);
-
+    set_map(grid_map); 
+	
 	//begin timer
 	gettimeofday(&beg, NULL);
-
+	
 	//start with OPEN containing only the initial node
-	int choiceOne = 0;
-	int choiceTwo = 0;
-
-	// User input to determine which board to solve
-	cout << "Please select 1 or 2 for which board you would like to solve:" << endl;
-	cin >> choiceOne;
-
-	switch(choiceOne)
-	{
-
-        case 1:
-            initial.gen_boardOne();
-            break;
-        case 2:
-            initial.gen_boardTwo();
-            break;
-	}
+	initial.gen_boardOne();
     // initial.set_HRobert(grid_map);
-
-    //User input to determine heuristic used
-    cout << "Please select a heuristic you would like to use:" << endl;
-    cout << "1: Default" << endl << "2: set_HAustin" << endl << "3: set_HCody" << endl << "4: set_HRobert" << endl;
-    cin >> choiceTwo;
-    switch(choiceTwo)
-    {
-        case 1:
-            initial.set_h();
-            break;
-        case 2:
-            initial.set_HAustin(grid_map);
-            break;
-        case 3:
-            initial.set_HCody(grid_map);
-            break;
-        case 4:
-            initial.set_HRobert(grid_map);
-    }
     initial.set_HRobert(grid_map);
     // initial.set_h();
     // initial.set_HAustin(grid_map);
-	open.insert(open.begin(), initial);
+	open.insert(open.begin(), initial); 
 
 	// boardTwo.gen_boardTwo();
     cout <<"initial board: " << endl;
@@ -514,14 +478,14 @@ int main()
     // boardTwo.print_board();
     closed.insert(closed.begin(), open.back());
     open.pop_back();
-    cout << endl << "Open's size: " << open.size() << endl;
+    cout << endl << "Open's size: " << open.size() << endl; 
     cout << endl << "initial board moved to closed and open popped" << endl;
     cout << endl << "Checking moves" << endl;
     check_moves(initial, open);
     cout << endl << "initial board's children generated" << endl;
     BoardState* BESTNODE;
 	BoardState* SUCCESSOR;
-    cout << endl << "Printing all new children" << endl;
+    cout << endl << "Printing all new children" << endl; 
     for(int i = 0; i < open.size(); i++)
     {
         open.at(i).print_board();
@@ -540,17 +504,17 @@ int main()
         cout << endl << "Closed's size: " << closed.size() << endl;
         cout << endl << "sorting closed" << endl;
         sort(closed.begin(), closed.end(), sort_by_fn);
-        cout << endl << "Most significant closed node: " << endl;
-        closed.back().print_board();
+        cout << endl << "Most significant closed node: " << endl; 
+        closed.back().print_board(); 
         cout << endl << "Checking moves" << endl;
         check_moves(*SUCCESSOR, open);
         cout << endl << "Generated Successors children" << endl;
         cout << endl << "Printing all new children" << endl;
-        sort(open.begin(), open.end(), sort_by_fn);
+        sort(open.begin(), open.end(), sort_by_fn);  
     }
     cout << endl << "found goal" << endl;
 	// std::cout << "sanity check: goal is goal" << (goal==goal) << std::endl;
-
+	
 	// int in;
 	// //until goal node is found, repeat following procedure
 	// bool GOALNOTFOUND = true;
@@ -564,7 +528,7 @@ int main()
 	// 		GOALNOTFOUND=false;
 	// 		break;
 	// 	}
-
+		
 	// 	//pick node on open with lowest f' value. call it BESTNODE
 	// 	//pick node here
 	// 	if(firstPass)
@@ -572,7 +536,7 @@ int main()
 	// 		BESTNODE = &open[0];
 	// 		firstPass= false;
 	// 	}
-
+		
 	// 	for(int i=0; i<open.size(); i++)
 	// 	{
 	// 		//check if SUCCESSOR is the same as any node on OPEN
@@ -588,7 +552,7 @@ int main()
 	// 	{
 	// 		//generate successors of BESTNODE (based on directions available to 0)
 	// 		std::cout << "	OPEN SIZE B4" << open.size() << std::endl;
-
+			
 	// 		check_moves(*BESTNODE, open);
 	// 		std::cout << "	OPEN SIZE populated" << open.size() << std::endl;
 	// 		closed.push_back(open.back());
@@ -605,8 +569,8 @@ int main()
 	// 		//check if SUCCESSOR is the same as any node on OPEN
 	// 		BESTNODE = ((BESTNODE->g + BESTNODE->h)>(open[i].g + open[i].h)) ? &open[i]:BESTNODE; // assign lowest value to bestnode here
 	// 	}
-
-
+		
+		
 	// 	for(int i=0; i<open.size(); i++)//iterate through 'open' vector
 	// 	{
 	// 		//check if SUCCESSOR is the same as any node on OPEN
@@ -617,19 +581,19 @@ int main()
 	// 			//delete SUCCESSOR;
 	// 			//open.
 	// 			//SUCCESSOR = nullptr;
-
+				
 	// 		}
 	// 	}
-
+		
 	// 	std::cout << "compared bestnode to best node to successors" << std::endl;
 	// 	//std::cin >> in;
-
+			
 	// }
 	// std::cout << "Loop End" << std::endl;
-
-
-
-
+	
+	
+	
+	
 	//start.gen_board();
     //start.print_board();
 	/*
@@ -641,14 +605,12 @@ int main()
     cout << endl;
     open[0].print_board();
 	*/
-
-
+	
+	
 	//end timer
 	gettimeofday(&end, NULL);
 	//print execution time
 	const double runtime = end.tv_sec - beg.tv_sec + (end.tv_usec - beg.tv_usec) / 1000000.0;
-	//Changed the cout here to be more formal
-	printf("Time till solution found: %.6f s\n", runtime);
-
+	printf("compute time: %.6f s\n", runtime);
     return 0;
 }
