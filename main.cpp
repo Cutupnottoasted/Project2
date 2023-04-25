@@ -409,8 +409,8 @@ int main()
     int boardChoice = 0;
 	int algChoice = 0;
     cout << "Please select 1 or 2 for which board you would like to solve:" << endl;
-	// cin >> boardChoice;
-    boardChoice = 2;
+	cin >> boardChoice;
+   
     switch(boardChoice)
 	{
         case 1:
@@ -423,8 +423,8 @@ int main()
 
     cout << "Please select a heuristic you would like to use:" << endl;
     cout << "1: Default" << endl << "2: set_HAustin" << endl << "3: set_HCody" << endl << "4: set_HRobert" << endl;
-    // cin >> algChoice;
-    algChoice = 2;
+    cin >> algChoice;
+
     switch(algChoice)
     {
         case 1:
